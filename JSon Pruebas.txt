@@ -1,0 +1,172 @@
+Para probar los servicios se deben ejecutar en el orden indicado:
+
+SERVICIO 1:
+******************
+Nombre: Login
+URL: http://localhost:8080/test-previred/autenticar/login
+Método: POST
+Body:
+{
+    "username":"lmatamalac",
+    "password":"123admin"
+}
+
+NOTA:
+Este usuario y password son los que están registrados en la BD H2 al levantar el servicio
+
+Response ejemplo:
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJsbWF0YW1hbGFjIiwiaWF0IjoxNzQ2ODIyNTU4LCJleHAiOjE3NDY4MjM5OTh9.d9uIr8juZoNX-LE8hRwkeUo1HdcqliuiNP38YDcToE4"
+}
+
+
+
+SERVICIO 2
+******************
+Nombre: RegistrarUsuario
+URL: http://localhost:8080/test-previred/autenticar/registro
+Método: POST
+Body:
+{
+    "username":"bmatamalaf",
+    "password":"123admin",
+    "nombre":"Benjamín",
+    "apellido":"Matamala"
+}
+Authorization: Auth Type : Bearer Token -> el valor es el token que devuelve en el response el SERVICIO 1
+
+Response:
+{
+    "token": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJibWF0YW1hbGFmIiwiaWF0IjoxNzQ2ODE1NTExLCJleHAiOjE3NDY4MTY5NTF9.AQ83hcOimk3Mf953z0ya2_RowbWSzGK15jjJ3Suhkfg"
+}
+
+
+
+SERVICIO 3:
+******************
+Nombre: NuevaTarea
+URL: http://localhost:8080/test-previred/api/tarea
+Método: POST
+Body:
+{
+    "descripcion":"Esta tarea está en BackLog",
+    "estado":"TBL"
+}
+Authorization: Auth Type : Bearer Token -> el valor es el token que devuelve en el response el SERVICIO 1
+
+NOTA:
+En la descripción se puede ingresar el texto que se desea para explicar la tarea
+Los estados son los siguientes y ya están cargados en la BD H2 al levantar el servicio
+RECOMIENDO EJECUTAR VARIAS VECES ESTE SERVICIO CON DISTINTAS TAREAS Y ESTADOS PARA USAR SERVICIO DE ELIMINAR Y BUSCAR
+
+TBL		Tarea en backLog
+TPH		Tarea por hacer
+TEP		Tarea en proceso
+TPA		Tarea pausada
+TTA		Tarea terminada
+
+Response:
+{
+    "id": 1,
+    "descripcion": "Esta tarea está en BackLog",
+    "usuario": "lmatamalac",
+    "fechaRegistro": "2025-05-09T18:55:58.204+00:00",
+    "fechaModificacion": "2025-05-09T18:55:58.204+00:00",
+    "estado": "TBL"
+}
+
+
+
+SERVICIO 4:
+******************
+Nombre: ModificarTarea
+URL: http://localhost:8080/test-previred/api/tarea
+Método: PUT
+Body:
+{
+    "descripcion":"Esta tarea es una prueba modificada",
+    "estado":"TTA"
+}
+
+Params:  idTarea         (Es el Id de la tarea que quedó en la BD)
+
+Authorization: Auth Type : Bearer Token -> el valor es el token que devuelve en el response el SERVICIO 1
+
+NOTA:
+En el Body van los nuevos valores que quedarán en el registro de la tarea, es decir, un nuevo estado y una nueva descripción de la tarea.
+
+Response:
+{
+    "id": 2,
+    "descripcion": "Esta tarea es una prueba modificada",
+    "usuario": "lmatamalac",
+    "fechaRegistro": "2025-05-09T18:33:38.349+00:00",
+    "fechaModificacion": "2025-05-09T18:36:02.734+00:00",
+    "estado": "TTA"
+}
+
+
+
+SERVICIO 5:
+******************
+Nombre: EliminarTarea
+URL: http://localhost:8080/test-previred/api/tarea
+Método: DEL
+Body:   Sin Body
+Params:  idTarea        (Es el Id de la tarea que quedó en la BD)
+
+Authorization: Auth Type : Bearer Token -> el valor es el token que devuelve en el response el SERVICIO 1
+
+Response: Sin cuerpo de salida -> sólo responde un 204 No Content   en verde
+
+
+
+SERVICIO 6:
+******************
+Nombre: TareasEntreFechas
+URL: http://localhost:8080/test-previred/api/tarea/tareasEntreFechas
+Método: GET
+Body:   Sin Body
+Params:  
+fechaDesde    ->   ejemplo  09/05/2025
+fechaHasta     ->   ejemplo  10/05/2025
+
+Authorization: Auth Type : Bearer Token -> el valor es el token que devuelve en el response el SERVICIO 1
+
+Response:    es una lista
+[
+    {
+        "id": 1,
+        "descripcion": "Esta tarea está en BackLog",
+        "usuario": "lmatamalac",
+        "fechaRegistro": "2025-05-09T18:55:58.204+00:00",
+        "fechaModificacion": "2025-05-09T18:55:58.204+00:00",
+        "estado": "TBL"
+    }
+]
+
+
+
+SERVICIO 7:
+******************
+Nombre: Tareas por Estado
+URL: http://localhost:8080/test-previred/api/tarea/tareasPorEstado
+Método: GET
+Body:   Sin Body
+Params: estado    ->  ejemplo:  TBL         -> son los estado indicados en el SERVICIO 3
+
+Authorization: Auth Type : Bearer Token -> el valor es el token que devuelve en el response el SERVICIO 1
+
+Response:    es una lista
+[
+    {
+        "id": 2,
+        "descripcion": "Esta tarea está en BackLog",
+        "usuario": "lmatamalac",
+        "fechaRegistro": "2025-05-09T18:33:38.349+00:00",
+        "fechaModificacion": "2025-05-09T18:33:38.349+00:00",
+        "estado": "TBL"
+    }
+]
+
+
